@@ -10,13 +10,13 @@ var salvaB = 0;
 var salvaC = 0;
 var desenharA = quantiA;
 var dias = 0;
-var flag = 0;
 var checaA = 0;
 
 function setup() {
   createCanvas(5000, 2000);   
+    frameRate(60);
 
-    //Caixas de texto
+    //Caixas de textobjhbhjb
   caixaDias = createInput();
   caixaDias.position(45, 40);
     
@@ -45,12 +45,14 @@ function setup() {
 
 function defValores(){
     quantiA = Number(caixaQuantiA.value());
-    dias = caixaDias.value();
+    dias = caixaDias.value() * 1000;
     vazaoA = caixaVazaoA.value();
     vazaoB = caixaVazaoB.value();
     vazaoC = caixaVazaoC.value();
     desenharA = quantiA;
-    loop();
+    quantiB = 0;
+    quantiC = 0;
+    Execontas();
 }
 
 function draw() {
@@ -116,20 +118,23 @@ function draw() {
     text('B', 780, 75);
     text('C', 780, 105);
     
-    frameRate(600);
-    //tabela([quantiA, quantiB]);
-    //console.log(quantiA, quantiB, quantiC);
-    checaA = quantiA;
-    
-    tabela([flag,quantiA, quantiB, quantiC]);
+}
+
+function Execontas(){
+    for(var flag = 0; flag <= dias; flag++){
+    checaA = quantiA;    
     
     quantiA = CalculaA(quantiA, quantiC);
     quantiB = CalculaB(quantiB, quantiA);
     quantiC = CalculaC(quantiC, quantiB);
-    flag++;
+    
+    if(flag % 1000 == 0){    
+    draw(quantiA, quantiB, quantiC);
+    tabela([flag, quantiA, quantiB, quantiC]);
+    }
     
     if(flag == dias){
-        noLoop();
+        break;
         console.log(quantiA, quantiB, quantiC);
         text('Valor no final do dia selecionado de cada container: A: ' + quantiA + ', B: ' + quantiB + ', C: ' + quantiC, 50, 350);
     } 
@@ -137,8 +142,15 @@ function draw() {
         noLoop();
         console.log(quantiA, quantiB, quantiC);
         text('O sistema entrou em equilibrio no dia ' + flag + ', a quantidade dos containers é de: A: ' + quantiA + ', B: ' + quantiB + ', C: ' + quantiC, 50, 350);
+        }
     }
+    
+    //while(encherA != quantiA || encherB != quantiB || encherC !=){
+        
+   // }
 }
+
+//console.log(Date.now());
 
 function CalculaA(quantiA, quantiC) {
     var k1 = calcKA(quantiA, quantiC);
@@ -162,7 +174,7 @@ function CalculaC(quantiC, quantiB){
     var m3 = calcKC(quantiC + (m2 * timeStep / 2), quantiB + (m2 * timeStep / 2));
     var m4 = calcKC(quantiC + (m3 * timeStep), quantiB + (m3 * timeStep));
     return quantiC + timeStep * (m1 + 2*m2 + 2*m3 + m4) / 6;
-    //arrayPontos.push(new Ponto(flag,salvaA));   
+    arrayPontos.push(new Ponto(flag,salvaA));   
 }
 
 function calcKA(quantiA, quantiC){
@@ -226,7 +238,15 @@ var arrayPontos = new Array();
 
 
 
+var posRelativaXA = map(quantiA, 0, desenharA, 0, 100);
+var posRelativaXB = map(quantiB, 0, desenharA, 0, 100);
+var posRelativaXC = map(quantiC, 0, desenharA, 0, 100);
 
+var posRelativaYA = map(quantiA, desenharA, 0, 100, 0);
+var posRelativaYB = map(quantiB, 0, desenharA, 0, 100);
+var posRelativaYC = map(quantiC, 0, desenharA, 0, 100);
+
+/*
  function imprimirDia(salvaDias, salvaA, salvaB){
     fill(0);
     text('No dia ' + salvaDias - 1 + ' a quantidade em A é de ' + quantiA + ' e B é ' + quantiB, 400, 320);
